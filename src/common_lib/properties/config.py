@@ -2,16 +2,17 @@ from dotenv import load_dotenv
 import boto3
 import os
 
+from common_lib.util.singleton import Singleton
 
-class Config(object):
+class Config(metaclass=Singleton):
     is_lambda = False
-    def __init__(self, is_lambda: bool, config_file: str = ''):
-        self.is_lambda = is_lambda
-
-        if not is_lambda:
-            load_dotenv(config_file)
+    def __init__(self):
+        pass
         
-
+    def load_config_file(self, config_file: str):
+        load_dotenv(config_file, override = False)
+        self.is_lambda = False
+    
     def get_property(self, key: str, with_decryption: bool = False):
     
         if not self.is_lambda:
